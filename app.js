@@ -19,8 +19,7 @@ app.get('/login', (req, resp)=>{
     resp.render("login")
 });
 app.get('/profile', isLoggedIn , async (req, resp)=>{
-    let user = await userModel.findOne({email: req.user.email})
-    user.populate("posts");
+    let user = await userModel.findOne({email: req.user.email}).populate("posts");
     resp.render("profile", {user});
 });
 
