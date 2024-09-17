@@ -24,6 +24,25 @@ app.get('/profile', isLoggedIn , async (req, resp)=>{
 });
 
 
+app.get('/like/:id', isLoggedIn , async (req, resp)=>{
+    let post = await postModel.findOne({_id: req.params.id}).populate("user");
+    if(post.likes.indexOf(req.user.userid) === -1){
+    post.likes.push(req.user.userid);
+}
+else{
+    post.likes.splice(post.likes.indexOf(req.user.userid), 1);
+}
+    await post.save();
+    resp.redirect("/profile");
+});
+
+app.get('/edit/:id', isLoggedIn , async (req, resp)=>{
+    let post = await postModel.findOne({_id: req.params.id}).populate("user");
+    
+    resp.render("/edit");
+});
+
+
 app.post('/post', isLoggedIn , async (req, resp)=>{
     let user = await userModel.findOne({email: req.user.email})
     let {content} = req.body;
