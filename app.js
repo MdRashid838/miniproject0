@@ -39,7 +39,13 @@ else{
 app.get('/edit/:id', isLoggedIn , async (req, resp)=>{
     let post = await postModel.findOne({_id: req.params.id}).populate("user");
     
-    resp.render("/edit");
+    resp.render("edit" , {post});
+});
+
+app.post('/update/:id', isLoggedIn , async (req, resp)=>{
+    let post = await postModel.findOneAndUpdate({_id: req.params.id} , {content: req.body.content});
+    
+    resp.redirect("/profile");
 });
 
 
@@ -52,7 +58,7 @@ app.post('/post', isLoggedIn , async (req, resp)=>{
     });
     user.posts.push(post._id);
     await user.save();
-    req.redirect("/profile");
+    resp.redirect("/profile");
 });
 
 app.post('/ragister', async (req, resp)=>{
